@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Configuration, OpenAIApi } from "openai";
+import { clearInterval, setInterval } from "worker-timers";
 
 import loadingGif from "./loading.gif";
 
@@ -53,10 +54,10 @@ const App = () => {
           model: "text-davinci-003",
           prompt: `${input}`,
           temperature: 0,
-          max_tokens: 4096,
+          max_tokens: 3072,
           top_p: 1,
-          frequency_penalty: 1,
-          presence_penalty: 0.5,
+          frequency_penalty: 0,
+          presence_penalty: 0.6,
         })
         .then((res) => {
           resolve(res.data.choices[0].text);
@@ -128,6 +129,7 @@ const App = () => {
               setQuery("");
               setResult("");
               setClear(true);
+              setStillStyping(false);
               document.getElementById("result-box").innerHTML = "";
             }}
           >
