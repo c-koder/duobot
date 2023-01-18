@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Configuration, OpenAIApi } from "openai";
 
 import loadingGif from "./loading.gif";
@@ -6,6 +6,8 @@ import loadingGif from "./loading.gif";
 const App = () => {
   const [query, setQuery] = useState("");
   const [result, setResult] = useState(undefined);
+
+  const ref = useRef(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +19,7 @@ const App = () => {
 
       document.getElementById(
         "result-box"
-      ).innerHTML += `<strong>You: </strong> ${query} <br/><hr/>`;
+      ).innerHTML += `<strong>You: </strong> ${query}<hr/>`;
 
       setQuery("");
 
@@ -69,7 +71,10 @@ const App = () => {
         .getElementById("result-box")
         .innerHTML.replace(`<img src="${loadingGif}">`, "");
 
-      document.getElementById("result-box").innerHTML += result + "<hr/>";
+      document.getElementById("result-box").innerHTML +=
+        "<div style='margin-top: -50px;'>" + result + "<hr/></div>";
+
+      ref.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [result]);
 
@@ -113,7 +118,11 @@ const App = () => {
             Clear
           </button>
         </div>
-        <div id="result-box" style={{ display: result ? "block" : "hidden" }} />
+        <div
+          id="result-box"
+          style={{ display: result ? "block" : "hidden" }}
+          ref={ref}
+        />
       </div>
     </div>
   );
