@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Configuration, OpenAIApi } from "openai";
-import { clearInterval, setInterval } from "worker-timers";
 
 import loadingGif from "./loading.gif";
 
@@ -9,16 +8,12 @@ const App = () => {
   const [result, setResult] = useState(undefined);
 
   const [loading, setLoading] = useState(false);
-  const [clear, setClear] = useState(false);
-  const [stillTyping, setStillStyping] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (query !== "") {
-      setClear(false);
       setLoading(true);
-      setStillStyping(true);
 
       document.getElementById(
         "result-box"
@@ -29,7 +24,7 @@ const App = () => {
       await fetchResult(JSON.stringify(query))
         .then((res) => {
           setLoading(false);
-          res && setResult(res.trim());
+          res && setResult(res);
         })
         .catch(() => {
           setLoading(false);
@@ -69,31 +64,14 @@ const App = () => {
   };
 
   useEffect(() => {
-    let interval;
-
-    if (result && !clear) {
+    if (result) {
       document.getElementById("result-box").innerHTML = document
         .getElementById("result-box")
         .innerHTML.replace(`<img src="${loadingGif}">`, "");
 
-      let index = 0;
-
-      interval = setInterval(() => {
-        if (index < result.length) {
-          setStillStyping(true);
-          document.getElementById("result-box").innerHTML +=
-            result.charAt(index);
-          index++;
-        } else {
-          document.getElementById("result-box").innerHTML += "<hr/>";
-          clearInterval(interval);
-          setStillStyping(false);
-        }
-      }, 50);
+      document.getElementById("result-box").innerHTML += result + "<hr/>";
     }
-
-    return () => clearInterval(interval);
-  }, [result, clear]);
+  }, [result]);
 
   useEffect(() => {
     if (loading) {
@@ -120,7 +98,7 @@ const App = () => {
               }
             }}
           />
-          <button type="button" onClick={handleSubmit} disabled={stillTyping}>
+          <button type="button" onClick={handleSubmit} disabled={loading}>
             Ask
           </button>
           <button
@@ -128,15 +106,14 @@ const App = () => {
             onClick={() => {
               setQuery("");
               setResult("");
-              setClear(true);
-              setStillStyping(false);
+              setLoading(false);
               document.getElementById("result-box").innerHTML = "";
             }}
           >
             Clear
           </button>
         </div>
-        <div id="result-box" style={{ display: clear ? "hidden" : "block" }} />
+        <div id="result-box" style={{ display: result ? "block" : "hidden" }} />
       </div>
     </div>
   );
