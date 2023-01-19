@@ -1,5 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
+:root {
+  --primary: #563878;
+  --primary-rgb: 86, 56, 120;
+
+  --light: #f9f9f9;
+  --light-rgb: 249, 249, 249;
+
+  --dark: #1c1c1c;
+  --dark-rgb: 28, 28, 28;
+}
+
 * {
   cursor: default;
   font-family: "Inter", sans-serif;
@@ -19,10 +30,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-position: center;
+  background-color: var(--light);
 }
 
 img {
@@ -30,6 +38,85 @@ img {
 }
 
 ::selection {
+  background-color: rgba($color: var(--dark-rgb), $alpha: 0.5);
+}
+
+.switch {
+  display: flex;
+  justify-content: center;
+  --duration: 0.3s;
+
+  cursor: pointer;
+  input {
+    display: none;
+    & + div {
+      position: relative;
+      &:before,
+      &:after {
+        --s: 1;
+        content: "";
+        position: absolute;
+        height: 4px;
+        top: 10px;
+        width: 24px;
+        background: var(--primary);
+        transform: scaleX(var(--s));
+        transition: transform var(--duration) ease;
+      }
+      &:before {
+        --s: 0;
+        left: 0;
+        transform-origin: 0 50%;
+        border-radius: 2px 0 0 2px;
+      }
+      &:after {
+        left: 28px;
+        transform-origin: 100% 50%;
+        border-radius: 0 2px 2px 0;
+      }
+      span {
+        padding-left: 56px;
+        line-height: 24px;
+        color: var(--primary);
+        &:before {
+          --x: 0;
+          --b: var(--primary);
+          --s: 4px;
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 24px;
+          height: 24px;
+          border-radius: 50%;
+          box-shadow: inset 0 0 0 var(--s) var(--b);
+          transform: translateX(var(--x));
+          transition: box-shadow var(--duration) ease,
+            transform var(--duration) ease;
+        }
+        &:not(:empty) {
+          padding-left: 64px;
+        }
+      }
+    }
+    &:checked {
+      & + div {
+        &:before {
+          --s: 1;
+        }
+        &:after {
+          --s: 0;
+        }
+        span {
+          &:before {
+            --x: 28px;
+            --s: 12px;
+            --b: var(--primary);
+          }
+        }
+      }
+    }
+  }
 }
 
 .wrapper {
@@ -38,19 +125,42 @@ img {
   margin: auto;
 
   @media screen and (max-width: 992px) {
-    max-width: 90%;
+    max-width: 100% !important;
+
+    h1 {
+      font-size: 48px !important;
+    }
+
+    input[type="text"] {
+      width: 90vw !important;
+      padding: 8px 12px !important;
+    }
+
+    button {
+      svg {
+        margin-top: -5px !important;
+        font-size: 22px !important;
+      }
+    }
+
+    #clear-btn {
+      right: 48px !important;
+    }
   }
 
   h1 {
     text-align: center;
     font-weight: 700;
     font-size: 60px;
+    color: var(--primary);
   }
 
   input[type="text"] {
     outline: none;
-    border: 1px solid rgba($color: #000000, $alpha: 0.5);
+    background-color: var(--light);
+    border: 2px solid rgba($color: var(--primary-rgb), $alpha: 1);
     border-radius: 5px;
+    color: var(--dark);
     padding: 12px 18px;
     width: inherit;
     transition: 0.25s ease;
@@ -58,24 +168,34 @@ img {
 
     &:hover,
     &:focus {
-      border-color: rgba($color: #000000, $alpha: 1);
+      background-color: rgba(var(--primary-rgb), 0.025);
     }
   }
 
   button {
+    position: absolute;
+    right: 10px;
     outline: none;
-    border: 1px solid rgba($color: #000000, $alpha: 0.5);
+    color: var(--light);
+    border: none;
+    background-color: transparent;
     border-radius: 5px;
-    padding: 12px 18px;
     transition: 0.25s ease;
-
-    &:hover {
-      background-color: rgba($color: #000000, $alpha: 0.25);
-    }
 
     &:disabled {
       cursor: not-allowed;
     }
+
+    svg {
+      margin-top: -7px !important;
+      font-size: 24px;
+      stroke: var(--primary);
+      cursor: pointer;
+    }
+  }
+
+  #clear-btn {
+    right: 52px;
   }
 
   #result-box {

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { FiArrowRightCircle, FiTrash2 } from "react-icons/fi";
 import { Configuration, OpenAIApi } from "openai";
 
 import loadingGif from "./loading.gif";
@@ -86,12 +87,62 @@ const App = () => {
     }
   }, [loading]);
 
+  const lightTheme = {
+    "--primary": "#563878",
+    "--primary-rgb": "86, 56, 120",
+    "--dark": "#1c1c1c",
+    "--dark-rgb": "28, 28, 28",
+    "--light": "#f6f6f6",
+    "--light-rgb": "249, 249, 249",
+  };
+
+  const darkTheme = {
+    "--primary": "#f6f6f6",
+    "--primary-rgb": "249, 249, 249",
+    "--dark": "#f6f6f6",
+    "--dark-rgb": "249, 249, 249",
+    "--light": "#1c1c1c",
+    "--light-rgb": "28, 28, 28",
+  };
+
+  const [currentMode, setCurrentMode] = useState("light");
+  const [isChecked, setIsChecked] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("mode") === "dark") {
+      setCurrentMode("dark");
+      setIsChecked(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    const theme = currentMode === "light" ? lightTheme : darkTheme;
+    Object.keys(theme).forEach((key) => {
+      const value = theme[key];
+      document.documentElement.style.setProperty(key, value);
+    });
+    // eslint-disable-next-line
+  }, [currentMode]);
+
+  const toggleTheme = () => {
+    const newMode = currentMode === "light" ? "dark" : "light";
+    setIsChecked(!isChecked);
+    setCurrentMode(newMode);
+    localStorage.setItem("mode", newMode);
+  };
+
   return (
     <div className="d-flex justify-content-center align-items-center container py-5">
       <div className="wrapper">
         <h1>DuoBot v1.0</h1>
+        <label class="switch">
+          <input type="checkbox" onClick={toggleTheme} />
+          <div>
+            <span></span>
+          </div>
+        </label>
         <br />
-        <div className="hstack gap-3 justify-content-center w-100">
+        <div className="position-relative hstack gap-3 justify-content-center w-100">
           <input
             type="text"
             placeholder="Ask me anything!"
@@ -103,19 +154,22 @@ const App = () => {
               }
             }}
           />
+          {result && (
+            <button
+              id="clear-btn"
+              type="button"
+              onClick={() => {
+                setQuery("");
+                setResult("");
+                setLoading(false);
+                document.getElementById("result-box").innerHTML = "";
+              }}
+            >
+              <FiTrash2 />
+            </button>
+          )}
           <button type="button" onClick={handleSubmit} disabled={loading}>
-            Ask
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setQuery("");
-              setResult("");
-              setLoading(false);
-              document.getElementById("result-box").innerHTML = "";
-            }}
-          >
-            Clear
+            <FiArrowRightCircle />
           </button>
         </div>
         <div
