@@ -42,13 +42,17 @@ img {
 }
 
 .switch {
-  display: flex;
-  justify-content: center;
   --duration: 0.3s;
 
-  cursor: pointer;
-  input {
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  margin: auto;
+  cursor: pointer !important;
+
+  input[type="checkbox"] {
     display: none;
+
     & + div {
       position: relative;
       &:before,
@@ -59,6 +63,7 @@ img {
         height: 4px;
         top: 10px;
         width: 24px;
+        cursor: pointer;
         background: var(--primary);
         transform: scaleX(var(--s));
         transition: transform var(--duration) ease;
@@ -93,6 +98,7 @@ img {
           transform: translateX(var(--x));
           transition: box-shadow var(--duration) ease,
             transform var(--duration) ease;
+          cursor: pointer;
         }
         &:not(:empty) {
           padding-left: 64px;
