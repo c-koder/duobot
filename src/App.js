@@ -154,20 +154,18 @@ const App = () => {
               }
             }}
           />
-          {result && (
-            <button
-              id="clear-btn"
-              type="button"
-              onClick={() => {
-                setQuery("");
-                setResult("");
-                setLoading(false);
-                document.getElementById("result-box").innerHTML = "";
-              }}
-            >
-              <FiTrash2 />
-            </button>
-          )}
+          <button
+            id="clear-btn"
+            type="button"
+            onClick={() => {
+              setQuery("");
+              setResult("");
+              setLoading(false);
+              document.getElementById("result-box").innerHTML = "";
+            }}
+          >
+            <FiTrash2 />
+          </button>
           <button type="button" onClick={handleSubmit} disabled={loading}>
             <FiArrowRightCircle />
           </button>
