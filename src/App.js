@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FiArrowRightCircle, FiTrash2 } from "react-icons/fi";
+import { FiArrowRightCircle, FiTrash2, FiClock } from "react-icons/fi";
 import { Configuration, OpenAIApi } from "openai";
 
 import loadingGif from "./loading.gif";
@@ -15,7 +15,7 @@ const App = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (query !== "") {
+    if (query !== "" && !loading) {
       setLoading(true);
 
       document.getElementById(
@@ -132,49 +132,138 @@ const App = () => {
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center container py-5">
+    <div className="min-vh-100 d-flex flex-column justify-content-center align-items-center container">
       <div className="wrapper">
-        <h1>DuoBot v1.0</h1>
-        <label class="switch">
-          <input type="checkbox" onClick={toggleTheme} />
-          <div>
-            <span></span>
-          </div>
-        </label>
-        <br />
-        <div className="position-relative hstack gap-3 justify-content-center w-100">
-          <input
-            type="text"
-            placeholder="Ask me anything!"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSubmit(e);
-              }
-            }}
-          />
+        <div className="header">
+          <h1>DuoBot v1.2</h1>
+          <label class="switch">
+            <input type="checkbox" onClick={toggleTheme} />
+            <div>
+              <span></span>
+            </div>
+          </label>
           <button
-            id="clear-btn"
+            className="history-btn"
             type="button"
-            onClick={() => {
-              setQuery("");
-              setResult("");
-              setLoading(false);
-              document.getElementById("result-box").innerHTML = "";
-            }}
+            data-bs-toggle="modal"
+            data-bs-target="#versionHistoryModal"
           >
-            <FiTrash2 />
-          </button>
-          <button type="button" onClick={handleSubmit} disabled={loading}>
-            <FiArrowRightCircle />
+            <FiClock />
           </button>
         </div>
         <div
-          id="result-box"
-          style={{ display: result ? "block" : "hidden" }}
-          ref={ref}
-        />
+          class="modal fade"
+          id="versionHistoryModal"
+          tabIndex="-1"
+          aria-labelledby="versionHistoryModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+              <div
+                class="modal-header pb-0"
+                style={{ border: "none", marginBottom: -8 }}
+              >
+                <h5 class="modal-title">Version History</h5>
+                <button
+                  type="button"
+                  class="btn-close mx-1"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body version-history-modal">
+                <hr />
+                <p>
+                  v1.2 <span className="date">(05/02/2023)</span>
+                </p>
+                <ul>
+                  <li>UI/UX improvements</li>
+                  <li>Bug fixes</li>
+                </ul>
+                <hr />
+                <p>
+                  v1.1 <span className="date">(22/01/2023)</span>
+                </p>
+                <ul>
+                  <li>Interface updates</li>
+                </ul>
+                <hr />
+                <p>
+                  v1.0 <span className="date">(20/01/2023)</span>
+                </p>
+                <ul>
+                  <li>Stable release upon patches</li>
+                </ul>
+                <hr />
+                <p>
+                  v0.3 <span className="date">(19/01/2023)</span>
+                </p>
+                <ul>
+                  <li>Functionality updates</li>
+                  <li>Bug fixes on repeated query calls</li>
+                </ul>
+                <hr />
+                <p>
+                  v0.2 <span className="date">(18/01/2023)</span>
+                </p>
+                <ul>
+                  <li>UI styling</li>
+                  <li>UX improvements</li>
+                  <li>Color palette updates</li>
+                </ul>
+                <hr />
+                <p>
+                  v0.1 <span className="date">(15/01/2023)</span>
+                </p>
+                <ul>
+                  <li>Project initialization</li>
+                  <li>OpenAI API intergration</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="inner">
+          <div className="result-wrapper">
+            <div
+              id="result-box"
+              style={{ display: result ? "block" : "hidden" }}
+            />
+            <div ref={ref}></div>
+          </div>
+
+          <div className="input-wrapper">
+            <div className="hstack gap-3 justify-content-center w-100">
+              <textarea
+                placeholder="Ask me anything!"
+                rows="1"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    handleSubmit(e);
+                  }
+                }}
+              />
+              <button
+                id="clear-btn"
+                type="button"
+                onClick={() => {
+                  setQuery("");
+                  setResult("");
+                  setLoading(false);
+                  document.getElementById("result-box").innerHTML = "";
+                }}
+              >
+                <FiTrash2 />
+              </button>
+              <button type="button" onClick={handleSubmit} disabled={loading}>
+                <FiArrowRightCircle />
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

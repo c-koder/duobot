@@ -126,20 +126,50 @@ img {
 }
 
 .wrapper {
-  max-width: 60%;
-  min-width: 60%;
+  position: relative;
+  max-width: 75%;
+  min-width: 75%;
   margin: auto;
+  background-color: rgba(var(--dark-rgb), 0.03);
+  box-shadow: 0px 0px 50px 10px rgba(var(--dark-rgb), 0.02);
+  border-radius: 10px !important;
+  overflow: hidden;
+
+  .header {
+    padding: 25px;
+    border-radius: 10px !important;
+    background-color: rgba(var(--primary-rgb), 0.02);
+  }
+
+  .history-btn {
+    top: 20px;
+    right: 20px;
+
+    svg {
+      font-size: 24px !important;
+      stroke-width: 2.2px;
+    }
+  }
 
   @media screen and (max-width: 992px) {
     max-width: 100% !important;
+    box-shadow: 0px 0px 50px 10px rgba(var(--dark-rgb), 0.1);
+
+    .inner {
+      padding: 25px !important;
+
+      .input-wrapper {
+        bottom: 20px !important;
+      }
+    }
 
     h1 {
       font-size: 48px !important;
     }
 
-    input[type="text"] {
+    textarea {
       width: 90vw !important;
-      padding: 8px 80px 8px 12px !important;
+      padding: 14px 90px 14px 20px !important;
     }
 
     button {
@@ -156,6 +186,15 @@ img {
     }
   }
 
+  .inner {
+    padding: 30px;
+
+    .input-wrapper {
+      position: sticky;
+      bottom: 20px;
+    }
+  }
+
   h1 {
     text-align: center;
     font-weight: 700;
@@ -163,21 +202,16 @@ img {
     color: var(--primary);
   }
 
-  input[type="text"] {
+  textarea {
     outline: none;
-    background-color: var(--light);
+    background-color: transparent !important;
     border: 2px solid rgba($color: var(--primary-rgb), $alpha: 1);
     border-radius: 5px;
     color: var(--dark);
-    padding: 12px 96px 12px 18px;
+    padding: 20px 100px 20px 24px;
     width: inherit;
-    transition: 0.25s ease;
+    resize: none;
     cursor: text;
-
-    &:hover,
-    &:focus {
-      background-color: rgba(var(--primary-rgb), 0.025);
-    }
   }
 
   button {
@@ -206,10 +240,68 @@ img {
     right: 52px;
   }
 
-  #result-box {
-    color: var(--dark);
-    margin-top: 20px;
-    width: inherit;
-    white-space: pre-wrap;
+  .result-wrapper {
+    height: 60vh;
+    overflow-y: scroll;
+
+    #result-box {
+      color: var(--dark);
+      width: inherit;
+      white-space: pre-wrap;
+      margin-bottom: 20px;
+    }
   }
+}
+
+.version-history-modal {
+  padding: 15px 25px;
+
+  p,
+  li,
+  span {
+    font-size: 15px !important;
+  }
+
+  p {
+    margin: 0;
+    font-weight: 600;
+
+    span {
+      font-style: italic;
+      font-weight: 500;
+    }
+  }
+
+  hr {
+    margin: 8px 0;
+  }
+
+  ul {
+    margin: 5px 10px;
+    list-style-type: circle;
+    padding-left: 15px;
+
+    li {
+      margin: 0;
+      padding: 0;
+    }
+  }
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(var(--light-rgb), 0.25);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgba(var(--dark-rgb), 0.1);
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
 }
