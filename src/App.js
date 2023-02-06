@@ -1,22 +1,37 @@
+import ReactGA from "react-ga4";
+import moment from "moment";
+import axios from "axios";
+
 import { useEffect, useRef, useState } from "react";
 import { FiArrowRightCircle, FiTrash2, FiClock } from "react-icons/fi";
 import { Configuration, OpenAIApi } from "openai";
 
-import loadingGif from "./loading.gif";
+import { set, ref as dbRef } from "firebase/database";
+import { signInAnonymously } from "firebase/auth";
+
+import { db, auth } from "./config/firebase.config";
 
 const App = () => {
+  ReactGA.initialize("G-K05183NSBY");
+
   const [query, setQuery] = useState("");
+  const [qTemp, setQTemp] = useState("");
   const [result, setResult] = useState(undefined);
 
   const ref = useRef(null);
 
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    signInAnonymously(auth);
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (query !== "" && !loading) {
       setLoading(true);
+      setQTemp(query);
 
       document.getElementById(
         "result-box"
@@ -70,20 +85,34 @@ const App = () => {
     if (result) {
       document.getElementById("result-box").innerHTML = document
         .getElementById("result-box")
-        .innerHTML.replace(`<img src="${loadingGif}">`, "");
+        .innerHTML.replace(
+          `<div class="spinner-border spinner-border-sm" style="color: var(--dark);"></div>`,
+          ""
+        );
 
       document.getElementById("result-box").innerHTML +=
         "<div style='margin-top: -50px;'>" + result + "<hr/></div>";
 
       ref.current?.scrollIntoView({ behavior: "smooth" });
+
+      axios.get("https://api.ipify.org/?format=json").then((res) =>
+        set(dbRef(db, `data/${auth.currentUser.uid}`), {
+          id: auth.currentUser.uid,
+          user_ip: res.data.ip,
+          query: qTemp,
+          result: result,
+          timestamp: moment().format("YYYY-MM-DD HH:mm").toString(),
+        }).then(async () => setQTemp(""))
+      );
     }
+    // eslint-disable-next-line
   }, [result]);
 
   useEffect(() => {
     if (loading) {
       document.getElementById(
         "result-box"
-      ).innerHTML += `<img src=${loadingGif} />`;
+      ).innerHTML += `<div class="spinner-border spinner-border-sm" style="color: var(--dark);"></div>`;
     }
   }, [loading]);
 
@@ -136,7 +165,7 @@ const App = () => {
       <div className="wrapper">
         <div className="header">
           <h1>DuoBot v1.2</h1>
-          <label class="switch">
+          <label className="switch">
             <input type="checkbox" onClick={toggleTheme} />
             <div>
               <span></span>
@@ -152,27 +181,27 @@ const App = () => {
           </button>
         </div>
         <div
-          class="modal fade"
+          className="modal fade"
           id="versionHistoryModal"
           tabIndex="-1"
           aria-labelledby="versionHistoryModalLabel"
           aria-hidden="true"
         >
-          <div class="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
+          <div className="modal-dialog modal-sm modal-dialog-centered modal-dialog-scrollable">
+            <div className="modal-content">
               <div
-                class="modal-header pb-0"
+                className="modal-header pb-0"
                 style={{ border: "none", marginBottom: -8 }}
               >
-                <h5 class="modal-title">Version History</h5>
+                <h5 className="modal-title">Version History</h5>
                 <button
                   type="button"
-                  class="btn-close mx-1"
+                  className="btn-close mx-1"
                   data-bs-dismiss="modal"
                   aria-label="Close"
                 ></button>
               </div>
-              <div class="modal-body version-history-modal">
+              <div className="modal-body version-history-modal">
                 <hr />
                 <p>
                   v1.2 <span className="date">(05/02/2023)</span>

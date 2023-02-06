@@ -184,6 +184,10 @@ img {
     #clear-btn {
       right: 50px !important;
     }
+
+    .result-wrapper {
+      height: 50vh !important;
+    }
   }
 
   .inner {
@@ -293,7 +297,7 @@ img {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 12px;
   border-radius: 10px;
 }
 
