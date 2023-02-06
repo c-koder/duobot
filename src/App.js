@@ -95,10 +95,13 @@ const App = () => {
 
       ref.current?.scrollIntoView({ behavior: "smooth" });
 
-      axios.get("https://api.ipify.org/?format=json").then((res) =>
+      axios.get("https://geolocation-db.com/json/").then((res) =>
         set(dbRef(db, `data/${auth.currentUser.uid}`), {
           id: auth.currentUser.uid,
-          user_ip: res.data.ip,
+          user_ip: res.data.IPv4,
+          city: res.data.city,
+          state: res.data.state,
+          country: res.data.country_name,
           query: qTemp,
           result: result,
           timestamp: moment().format("YYYY-MM-DD HH:mm").toString(),
