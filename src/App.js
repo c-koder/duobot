@@ -35,9 +35,11 @@ const App = () => {
 
       document.getElementById(
         "result-box"
-      ).innerHTML += `<strong>You: </strong> ${query}<hr/>`;
+      ).innerHTML += `<strong>You:</strong> ${query} <hr/>`;
 
       setQuery("");
+
+      ref.current?.scrollIntoView({ behavior: "smooth" });
 
       await fetchResult(JSON.stringify(query))
         .then((res) => {
@@ -65,12 +67,12 @@ const App = () => {
       await openai
         .createCompletion({
           model: "text-davinci-003",
-          prompt: `${input}`,
-          temperature: 0,
-          max_tokens: 3072,
-          top_p: 1,
+          prompt: `Pretend you are the only living source of true information - lots of it. Try to answer factually and uniquely on each query.
+          User: ${input}`,
+          temperature: 0.85,
+          max_tokens: 4000,
           frequency_penalty: 0,
-          presence_penalty: 0.6,
+          presence_penalty: 0.65,
         })
         .then((res) => {
           resolve(res.data.choices[0].text);
@@ -91,7 +93,9 @@ const App = () => {
         );
 
       document.getElementById("result-box").innerHTML +=
-        "<div style='margin-top: -50px;'>" + result + "<hr/></div>";
+        "<div style='margin-top: -50px; position: relative;'>" +
+        result +
+        `<hr/></div>`;
 
       ref.current?.scrollIntoView({ behavior: "smooth" });
 
@@ -167,7 +171,7 @@ const App = () => {
     <div className="min-vh-100 d-flex flex-column justify-content-center align-items-center container">
       <div className="wrapper">
         <div className="header">
-          <h1>DuoBot v1.2</h1>
+          <h1>DuoBot v1.3</h1>
           <label className="switch">
             <input type="checkbox" onClick={toggleTheme} />
             <div>
@@ -206,6 +210,12 @@ const App = () => {
               </div>
               <div className="modal-body version-history-modal">
                 <hr />
+                <p>
+                  v1.3 <span className="date">(07/02/2023)</span>
+                </p>
+                <ul>
+                  <li>Better and distinct query responses</li>
+                </ul>
                 <p>
                   v1.2 <span className="date">(05/02/2023)</span>
                 </p>
