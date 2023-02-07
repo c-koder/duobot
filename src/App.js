@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { FiArrowRightCircle, FiTrash2, FiClock } from "react-icons/fi";
 import { Configuration, OpenAIApi } from "openai";
 
-import { set, ref as dbRef } from "firebase/database";
+import { set, ref as dbRef, push } from "firebase/database";
 import { signInAnonymously } from "firebase/auth";
 
 import { db, auth } from "./config/firebase.config";
@@ -96,7 +96,7 @@ const App = () => {
       ref.current?.scrollIntoView({ behavior: "smooth" });
 
       axios.get("https://geolocation-db.com/json/").then((res) =>
-        set(dbRef(db, `data/${auth.currentUser.uid}`), {
+        set(push(dbRef(db, `data/${auth.currentUser.uid}`)), {
           id: auth.currentUser.uid,
           user_ip: res.data.IPv4,
           city: res.data.city,
