@@ -19,6 +19,7 @@ const App = () => {
   const [result, setResult] = useState(undefined);
 
   const ref = useRef(null);
+  const inputRef = useRef(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -78,6 +79,7 @@ const App = () => {
           resolve(res.data.choices[0].text);
         })
         .catch((err) => {
+          console.log(err);
           reject(`Error with OpenAI API request: ${err.message}`);
         });
     });
@@ -99,17 +101,25 @@ const App = () => {
 
       ref.current?.scrollIntoView({ behavior: "smooth" });
 
+      inputRef.current?.focus();
+
       axios.get("https://geolocation-db.com/json/").then((res) =>
-        set(push(dbRef(db, `data/${auth.currentUser.uid}`)), {
-          id: auth.currentUser.uid,
-          user_ip: res.data.IPv4,
-          city: res.data.city,
-          state: res.data.state,
-          country: res.data.country_name,
-          query: qTemp,
-          result: result,
-          timestamp: moment().format("YYYY-MM-DD HH:mm").toString(),
-        }).then(async () => setQTemp(""))
+        set(
+          push(
+            dbRef(
+              db,
+              `/data/${moment().format("DDMMYYYY")}/${auth.currentUser.uid}`
+            )
+          ),
+          {
+            id: auth.currentUser.uid,
+            city: res.data.city,
+            country: res.data.country_name,
+            query: qTemp,
+            result: result,
+            timestamp: moment().format("YYYY-MM-DD HH:mm"),
+          }
+        ).then(async () => setQTemp(""))
       );
     }
     // eslint-disable-next-line
@@ -280,6 +290,8 @@ const App = () => {
               <textarea
                 placeholder="Ask me anything!"
                 rows="1"
+                autoFocus={true}
+                ref={inputRef}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => {
