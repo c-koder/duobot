@@ -68,8 +68,7 @@ const App = () => {
       await openai
         .createCompletion({
           model: "text-davinci-003",
-          prompt: `Pretend you are the only living source of true information - lots of it. Try to answer factually and uniquely on each query.
-          User: ${input}`,
+          prompt: `${input}`,
           temperature: 0.85,
           max_tokens: 4000,
           frequency_penalty: 0,
