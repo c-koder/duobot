@@ -73,6 +73,7 @@ const App = () => {
           max_tokens: 4000,
           frequency_penalty: 0,
           presence_penalty: 0.65,
+          stop: ["input:"],
         })
         .then((res) => {
           resolve(res.data.choices[0].text);
@@ -102,24 +103,27 @@ const App = () => {
 
       inputRef.current?.focus();
 
-      axios.get("https://geolocation-db.com/json/").then((res) =>
-        set(
-          push(
-            dbRef(
-              db,
-              `/data/${moment().format("DDMMYYYY")}/${auth.currentUser.uid}`
-            )
-          ),
-          {
-            id: auth.currentUser.uid,
-            city: res.data.city,
-            country: res.data.country_name,
-            query: qTemp,
-            result: result,
-            timestamp: moment().format("YYYY-MM-DD HH:mm"),
-          }
-        ).then(async () => setQTemp(""))
-      );
+      axios
+        .get("https://geolocation-db.com/json/")
+        .then((res) =>
+          set(
+            push(
+              dbRef(
+                db,
+                `/data/${moment().format("DDMMYYYY")}/${auth.currentUser.uid}`
+              )
+            ),
+            {
+              id: auth.currentUser.uid,
+              city: res.data.city,
+              country: res.data.country_name,
+              query: qTemp,
+              result: result,
+              timestamp: moment().format("YYYY-MM-DD HH:mm"),
+            }
+          ).then(async () => setQTemp(""))
+        )
+        .catch((err) => console.log(err.message));
     }
     // eslint-disable-next-line
   }, [result]);
