@@ -70,7 +70,7 @@ const App = () => {
           model: "text-davinci-003",
           prompt: `${input}`,
           temperature: 0.85,
-          max_tokens: 4000,
+          max_tokens: 1000,
           frequency_penalty: 0,
           presence_penalty: 0.65,
           stop: ["input:"],
